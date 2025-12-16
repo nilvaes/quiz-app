@@ -3,9 +3,10 @@ import Quiz from "./components/quiz";
 function App() {
   return (
     <>
-      <div className="text-2xl font-bold flex flex-col items-center justify-center p-10 bg-gray-200 border shadow-2xl">
-        {" "}
-        <h1>Quiz App</h1>
+      <div className="mx-auto w-1/2 items-center">
+        <h1 className="font-bold text-3xl p-10 bg-gray-200 border shadow-2xl text-center">
+          Quiz App
+        </h1>
         <div>
           <Quiz />
         </div>
