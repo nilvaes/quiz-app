@@ -1,6 +1,7 @@
 import { useState } from "react";
+import Results from "./Results";
 
-type Question = {
+export type Question = {
   question: string;
   options: string[];
   answer: string;
@@ -31,7 +32,7 @@ export default function Quiz() {
   const initialAnswers = ["", "", ""];
   const [userAnswers, setUserAnswers] = useState(initialAnswers);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-
+  const [isQuizFinished, setIsQuizFinished] = useState(false);
   const selectedAnswer = userAnswers[currentQuestion];
   function handleSelectOption(option: string) {
     const newAnswers = [...userAnswers];
@@ -44,6 +45,9 @@ export default function Quiz() {
     if (currentQuestion < questionBank.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
+    if (currentQuestion === questionBank.length - 1) {
+      setIsQuizFinished(true);
+    }
   }
   function handlePrevQuestion() {
     if (currentQuestion > 0) {
@@ -51,28 +55,43 @@ export default function Quiz() {
     }
   }
 
-  function result() {
-    return console.log("Quiz finished. User answers:", userAnswers);
+  function toMainMenu() {
+    setIsQuizFinished(false);
+    setCurrentQuestion(0);
+    setUserAnswers(initialAnswers);
   }
+
+  if (isQuizFinished) {
+    return (
+      <Results
+        questionBank={questionBank}
+        userAnswers={userAnswers}
+        toMainMenu={toMainMenu}
+      />
+    );
+  }
+
   return (
-    <div className="mx-auto w-11/12 sm:w-3/4 md:w-1/2 max-w-2xl flex flex-col gap-4 justify-center p-4 border rounded shadow">
-      <h2>Question {currentQuestion + 1}</h2>
+    <div className="bg-[#C5AFA0] mx-auto w-11/12 sm:w-3/4 md:w-1/2 max-w-2xl flex flex-col gap-4 justify-center p-4  rounded shadow-lg">
+      <h2>
+        Question {currentQuestion + 1} / {questionBank.length}
+      </h2>
       <p>{questionBank[currentQuestion].question}</p>
       {questionBank[currentQuestion].options.map((option, index) => (
         <button
           key={index}
           className={
-            "p-2 bg-gray-300 rounded-sm" +
-            (selectedAnswer === option ? " bg-gray-400" : "")
+            "p-2 bg-[#06070E]/70 rounded-sm text-gray-300 cursor-pointer hover:bg-[#06070E]/80 " +
+            (selectedAnswer === option ? " bg-[#06070E]/99 " : "")
           }
           onClick={() => handleSelectOption(option)}
         >
           {option}
         </button>
       ))}
-      <div id="nav-buttons" className="flex gap-2">
+      <div id="nav-buttons" className="flex gap-2 text-gray-300">
         <button
-          className="p-2 bg-gray-300 rounded-sm disabled:opacity-50 disabled:cursor-default cursor-pointer"
+          className="p-2 bg-[#06070E] rounded-sm disabled:opacity-50 disabled:cursor-default cursor-pointer"
           onClick={handlePrevQuestion}
           disabled={currentQuestion === 0}
         >
@@ -80,39 +99,13 @@ export default function Quiz() {
         </button>
 
         <button
-          className="p-2 bg-gray-300 rounded-sm disabled:opacity-50 disabled:cursor-default cursor-pointer"
+          className="p-2 bg-[#06070E] rounded-sm disabled:opacity-50 disabled:cursor-default cursor-pointer"
           onClick={handleNextQuestion}
           disabled={!selectedAnswer}
         >
-          {currentQuestion === questionBank.length - 1 ? (
-            <button className="cursor-pointer" onClick={result}>
-              Finish Quiz
-            </button>
-          ) : (
-            ">"
-          )}
+          {currentQuestion === questionBank.length - 1 ? "Finish" : ">"}
         </button>
       </div>
     </div>
-    // <div>
-    //   {questionBank.map((q, index) => (
-    //     <div key={index} className="mb-6 p-4  rounded shadow">
-    //       <h2 className="font-semibold mb-2">{q.question}</h2>
-    //       <ul>
-    //         {q.options.map((option, idx) => (
-    //           <li key={idx} className="flex flex-col mb-2 ">
-    //             <button
-    //               onClick={() => handleSelecOption(option)}
-    //               className="cursor-pointer px-4 py-2 bg-gray-300  text-black rounded hover:bg-gray-400"
-    //             >
-    //               {option}
-    //             </button>
-    //           </li>
-    //         ))}
-    //         <p>{selectedOption}</p>
-    //       </ul>
-    //     </div>
-    //   ))}
-    // </div>
   );
 }
