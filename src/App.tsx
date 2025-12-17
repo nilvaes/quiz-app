@@ -2,16 +2,9 @@ import Quiz from "./components/quiz";
 
 function App() {
   return (
-    <>
-      <div className="mx-auto w-1/2 items-center">
-        <h1 className="font-bold text-3xl p-10 bg-gray-200 border  text-center">
-          Quiz App
-        </h1>
-        <div>
-          <Quiz />
-        </div>
-      </div>
-    </>
+    <div className="flex items-center justify-center min-h-screen">
+      <Quiz />
+    </div>
   );
 }
 
